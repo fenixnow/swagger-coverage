@@ -29,6 +29,7 @@ public abstract class PropertyConditionPredicate extends ConditionPredicate {
                 .filter(o -> mediaTypeName.equals(o.getKey()))
                 .map(o -> o.getValue().getSchema())
                 .filter(Objects::nonNull)
+                .filter(o -> o.getProperties() != null)
                 .flatMap(o -> (Stream<Map.Entry<String, Schema>>) o.getProperties().entrySet().stream())
                 .filter(o -> propertyName.equals(o.getKey()))
                 .map(o -> o.getValue())
