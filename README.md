@@ -2,29 +2,29 @@
 [release]: https://github.com/viclovsky/swagger-coverage/releases/latest "Latest release"
 [release-badge]: https://img.shields.io/github/release/viclovsky/swagger-coverage.svg?style=flat
 [maven]: https://repo.maven.apache.org/maven2/com/github/viclovsky/swagger-coverage-commandline/ "Maven Central"
-[maven-badge]: https://img.shields.io/maven-central/v/com.github.viclovsky/swagger-coverage-commandline.svg?style=flat
+[maven-badge]: https://img.shields.io/maven-central/v/com.github/viclovsky/swagger-coverage-commandline.svg?style=flat
 
 [![Build Status](https://github.com/viclovsky/swagger-coverage/workflows/Build/badge.svg)](https://github.com/viclovsky/swagger-coverage/actions)
 [![release-badge][]][release]
 [![maven-badge][]][maven] 
 
 # swagger-coverage
-Swagger-coverage gives a full picture about coverage of API tests (regression) based on OAS (Swagger). 
-By saying coverage we mean not a broad theme functionality, but presence (or absence) of calls defined by API methods, parameters, return codes or other conditions which corresponds specification of API.
+Swagger-coverage даёт полную картину покрытия API-тестов (регресса) на основе спецификации OAS (Swagger).
+Под покрытием понимается не функциональность в широком смысле, а наличие (или отсутствие) вызов, определённых методами API, параметрами, кодами возврата и другими условиями, соответствующими спецификации API.
 
 ![Swagger Coverage Report](.github/swagger-coverage.png)
 
-## How it works
-Producing coverage report consists of two parts. Firstly, during test execution, filter/interceptor/proxy save information of calls in swagger format in specific folder on executing tests.
-The next stage is to compare saved result with generated conditions from current API specification and builds report.  
+## Как это работает
+Создание отчёта о покрытии состоит из двух этапов. Во-первых, во время выполнения тестов фильтр/интерцептор/прокси сохраняет информацию о вызовах в формате swagger в специальную папку.
+На втором этапе сохранённые результаты сравниваются с условиями, сгенерированными из текущей спецификации API, и строится отчёт.
 
-## How to use and examples
-You can use swagger-coverage with any language and framework. You need to have proxy/filter/interceptor that accumulates data in swagger format. 
-Swagger-coverage have rest-assured integration from the box.
+## Как использовать и примеры
+Swagger-coverage можно использовать с любым языком и фреймворком. Вам нужен прокси/фильтр/интерцептор, накапливающий данные в формате swagger.
+Swagger-coverage имеет готовую интеграцию с REST Assured.
 
-> There is also a Karate integration, which has its own [manual](/swagger-coverage-karate/README.md).
+> Также доступна интеграция с Karate, документация к которой находится [здесь](/swagger-coverage-karate/README.md).
 
-Add filter dependency:
+Добавьте зависимость фильтра:
 ```xml
  <dependency>
      <groupId>com.github.viclovsky</groupId>
@@ -32,25 +32,25 @@ Add filter dependency:
      <version>${latest-swagger-coverage-version}</version>
  </dependency>
 ```
-or if use gradle, it can be added like
+или если используется gradle:
 
 ```
 compile "com.github.viclovsky:swagger-coverage-rest-assured:$latest-swagger-coverage-version"
 ```
 
-Just add filter into test client SwaggerCoverageRestAssured (SwaggerCoverageV3RestAssured for v3). For instance, as presented below:
+Просто добавьте фильтр SwaggerCoverageRestAssured (SwaggerCoverageV3RestAssured для v3) в тестовый клиент. Например:
 ```java
 RestAssured.given().filter(new SwaggerCoverageRestAssured())
 ```
 
-* Download and run command line.
-Download zip archive and unpack it. Don't forget to replace {latest-swagger-coverage-version} to latest version. 
+* Скачайте и запустите командную строку.
+Скачайте zip-архив и распакуйте его. Не забудьте заменить {latest-swagger-coverage-version} на актуальную версию.
 ```
 wget https://github.com/viclovsky/swagger-coverage/releases/download/{latest-swagger-coverage-version}/swagger-coverage-{latest-swagger-coverage-version}.zip
 unzip swagger-coverage-commandline-{latest-swagger-coverage-version}.zip
 ```
 
-Here is help of unzip swagger-commandline
+Справка командной строки:
 
 ```
 ./swagger-coverage-commandline --help
@@ -72,13 +72,13 @@ Here is help of unzip swagger-commandline
       Default: false
 ```
 
-To compare result of API tests with current API specification and build report call command line tool after running tests like that:
+Чтобы сравнить результаты API-тестов с текущей спецификацией и построить отчёт, запустите CLI-утилиту после выполнения тестов:
 
 ```
 ./swagger-coverage-commandline -s swagger.json -i swagger-coverage-output
 ```
 
-Output of the command:
+Вывод команды:
 ```
 19:21:21 INFO  OperationSwaggerCoverageCalculator - Empty coverage:
 ...
@@ -92,113 +92,287 @@ Output of the command:
 19:21:21 INFO  OperationSwaggerCoverageCalculator - Full coverage 38.682 %
 19:21:21 INFO  FileSystemResultsWriter - Write html report in file '.../swagger-coverage-report.html'
 ```
-Results (swagger-coverage-report.html/swagger-coverage-results.json) will be created after running of swagger-coverage.
+Результаты (swagger-coverage-report.html / swagger-coverage-results.json) будут созданы после запуска swagger-coverage.
 
-## Configuration options
-Swagger-coverage report can be configured by json-file. 
-You can control list of coverage, which be generated and checked for results.
+## Настройки
+Отчёт swagger-coverage можно настроить через JSON-файл.
+Вы можете управлять списком проверяемых условий покрытия.
 
-## Rules configuration options
-Options for different rules are placed in "rules" section. 
-You can disable some rules or change their behavior.
+### Правила покрытия
+Настройки правил размещаются в секции `"rules"`. Вы можете отключить отдельные правила или изменить их поведение.
 
-#### Checking response http-status
-This rule create condition for every status from *responses*-section of swagger specification.
-Condition mark *covered* when report generator find specific status in results files.
-Options for this rules are placed in *status* subsection in *rules* sections.
+Все правила **включены по умолчанию**. Каждое правило можно отключить или настроить индивидуально.
+У каждого правила есть общие параметры:
 
-You can setup next options:
+| Параметр | Тип | По умолчанию | Описание |
+|----------|-----|-------------|----------|
+| `enable` | boolean | `true` | Включить или отключить правило |
+| `filter` | массив строк | — | Проверять только элементы из списка (зависит от правила) |
+| `ignore` | массив строк | — | Пропустить элементы из списка (зависит от правила) |
 
-**enable** - *true/false*. You can disable this rule. Default value is *true*.
+#### `status` — Коды ответа HTTP
+**Идентификатор правила:** `status`
 
-**filter** - *[val1,val2]*. Rule will ignore all status, which not in filter list.
+Создаёт отдельное условие для каждого кода ответа, объявленного в секции `responses` операции.
+Условие помечается как *покрытое*, когда хотя бы один тестовый вызов вернул этот код ответа.
 
-**ignore** - *[val1,val2]*. Rule will ignore all status, which in ignore list.
+**Пример использования:** Проверить, что тесты затрагивают все объявленные коды ответов (200, 201, 400, 404, 500 и т.д.) для каждого эндпоинта.
 
-```` 
+```json
 {
-  "rules" : {
+  "rules": {
     "status": {
       "enable": true,
-      "ignore": ["400","500"],
-      "filter": ["200"]
+      "filter": ["200", "201"],
+      "ignore": ["500"]
+    }
+  }
+}
+```
+*Этот пример проверяет только статусы `200` и `201`, игнорируя `500`.*
+
+#### `only-declared-status` — Используются только объявленные статусы
+**Идентификатор правила:** `only-declared-status`
+
+Создаёт одно условие на операцию, проверяющее, что все полученные коды ответов объявлены в спецификации OpenAPI.
+Условие помечается как *покрытое*, если не обнаружено необъявленных кодов ответов.
+
+**Пример использования:** Обнаружить серверные ошибки (например, 500, 502), не задокументированные в спецификации, или определить отсутствующие коды ответов, которые стоит добавить.
+
+```json
+{
+  "rules": {
+    "only-declared-status": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `parameter-not-empty` — Параметр не пустой
+**Идентификатор правила:** `parameter-not-empty`
+
+Создаёт условие для каждого параметра операции (query, path, header). Условие помечается как *покрытое*, когда параметр присутствовал хотя бы в одном тестовом вызове.
+
+**Пример использования:** Убедиться, что каждый объявленный query-параметр, path-параметр или заголовок фактически используется в тестах.
+
+```json
+{
+  "rules": {
+    "parameter-not-empty": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `empty-required-header` — Обязательный заголовок отсутствует
+**Идентификатор правила:** `empty-required-header`
+
+Создаёт условие для каждого заголовка (header). Условие помечается как *покрытое*, когда заголовок **не был** отправлен в запросе (пустой).
+
+**Пример использования:** Проверить, что тесты покрывают сценарии с отсутствующими обязательными заголовками для проверки корректной обработки ошибок.
+
+```json
+{
+  "rules": {
+    "empty-required-header": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `enum-all-value` — Параметр покрывает все значения enum
+**Идентификатор правила:** `enum-all-value`
+
+Создаёт условие для каждого параметра с ограничением `enum`. Условие помечается как *покрытое* только когда **все** значения enum были получены по всем тестовым вызовам данной операции.
+
+**Пример использования:** Для параметра `status` с enum `["active", "inactive", "pending"]` убедиться, что тесты покрывают все три значения.
+
+```json
+{
+  "rules": {
+    "enum-all-value": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `enum-another-value` — Значение параметра вне enum
+**Идентификатор правила:** `enum-another-value`
+
+Создаёт условие для каждого параметра с ограничением `enum`. Условие помечается как *покрытое*, когда хотя бы один тестовый вызов отправил значение, **не входящее** в enum.
+
+**Пример использования:** Проверить, что тесты включают негативные сценарии — отправку невалидных enum-значений для проверки серверной валидации.
+
+```json
+{
+  "rules": {
+    "enum-another-value": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `not-empty-body` — Тело запроса не пустое
+**Идентификатор правила:** `not-empty-body`
+
+Создаёт условие для операций, объявляющих `requestBody`. Условие помечается как *покрытое*, когда хотя бы один тестовый вызов отправил непустое тело.
+
+**Пример использования:** Убедиться, что POST/PUT операции с телом запроса тестируются с реальным содержимым тела.
+
+```json
+{
+  "rules": {
+    "not-empty-body": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `property-not-empty` — Свойство тела запроса не пустое
+**Идентификатор правила:** `property-not-empty`
+
+Создаёт условие для каждого свойства в схеме тела запроса. Условие помечается как *покрытое*, когда свойство присутствовало хотя бы в одном тестовом вызове.
+
+**Пример использования:** Для объекта `User` с полями `name`, `email`, `role` убедиться, что тесты используют все поля.
+
+```json
+{
+  "rules": {
+    "property-not-empty": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `property-enum-all-value` — Свойство покрывает все значения enum
+**Идентификатор правила:** `property-enum-all-value`
+
+Создаёт условие для каждого свойства в теле запроса с ограничением `enum`. Условие помечается как *покрытое* только когда **все** значения enum были получены по всем тестовым вызовам.
+
+**Пример использования:** Для поля `status` с enum `["draft", "published", "archived"]` проверить, что тесты покрывают все три состояния.
+
+```json
+{
+  "rules": {
+    "property-enum-all-value": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `property-enum-another-value` — Значение свойства вне enum
+**Идентификатор правила:** `property-enum-another-value`
+
+Создаёт условие для каждого свойства в теле запроса с ограничением `enum`. Условие помечается как *покрытое*, когда хотя бы один тестовый вызов отправил значение, **не входящее** в enum.
+
+**Пример использования:** Проверить, что тесты включают негативные сценарии — отправку невалидных значений свойств для проверки валидации.
+
+```json
+{
+  "rules": {
+    "property-enum-another-value": {
+      "enable": true
+    }
+  }
+}
+```
+
+#### `exclude-deprecated` — Исключить устаревшие операции
+**Идентификатор правила:** `exclude-deprecated`
+
+Исключает устаревшие (deprecated) операции из категорий *Full*, *Partial* и *Empty* покрытия. Deprecated-операции не влияют на сводку "Operations coverage summary".
+
+**Пример использования:** Когда нужно измерять покрытие только актуальных операций, не учитывая устаревшие.
+
+**Отключено по умолчанию** — необходимо явно включить:
+
+```json
+{
+  "rules": {
+    "exclude-deprecated": {
+      "enable": true
+    }
+  }
+}
+```
+
+### Полный пример конфигурации
+
+Этот пример включает все правила, фильтрует проверку статусов только по `200` и `201`, игнорирует `400` и `500`, а также настраивает HTML и JSON writers:
+
+```json
+{
+  "rules": {
+    "status": {
+      "filter": ["200", "201"],
+      "ignore": ["400", "500"]
     },
-
-    ....
-  },
-  
-  ....
-}
-````
-
-#### Checking the list of declared and received statuses
-This rule create condition for comparing declared and received status. 
-Condition marked as *covered* when result not contains any of undeclared status.
-*Uncovered* state of this condition indicates missed status in original swagger-documentation 
-or server errors.
-Options for this rules are placed in *only-declared-status* subsection in *rules* sections.
-
-
-You can setup next options:
-
-**enable** - *true/false*. You can disable this rule. Default value is *true*.
-
-````
-{
-  "rules" : {
-
-    ....
-
-    "only-declared-status" : {
-      "enable" : true
+    "only-declared-status": {
+      "enable": true
+    },
+    "parameter-not-empty": {
+      "enable": true
+    },
+    "empty-required-header": {
+      "enable": true
+    },
+    "enum-all-value": {
+      "enable": true
+    },
+    "enum-another-value": {
+      "enable": true
+    },
+    "not-empty-body": {
+      "enable": true
+    },
+    "property-not-empty": {
+      "enable": true
+    },
+    "property-enum-all-value": {
+      "enable": true
+    },
+    "property-enum-another-value": {
+      "enable": true
+    },
+    "exclude-deprecated": {
+      "enable": true
     }
   },
-
-   ....
-}
-````
-
-#### Excluding deprecated operations from the coverage report statistic
-This rule is created for cases when you don't want to measure coverage of deprecated operations, but only for actual ones. <br>
-If an operation is deprecated then it will be excluded from *Full*, *Partial*, and *Empty* categories and won't affect the "Operations coverage summary"
-
-Options for this rule are placed in "*exclude-deprecated*" subsection in *rules* sections.
-
-You can set up next options:
-
-**enable** - *true/false*. <br>
-By default, this rule is not enabled. Add it to the config file with *true* value to enable this rule, like in the example below:
-
-````
-{
-  "rules" : {
-
-    ....
-
-    "exclude-deprecated" : {
-      "enable" : true
+  "writers": {
+    "html": {
+      "filename": "swagger-coverage-report.html",
+      "locale": "en"
+    },
+    "json": {
+      "filename": "swagger-coverage-results.json"
     }
-  },
-
-   ....
+  }
 }
-````
+```
 
-If you need you can add your rules for generation of conditions. So, please, send your PRs.
+Если вам нужны свои правила для генерации условий, пожалуйста, присылайте PR.
 
-## Result writer configuration
-Options for report generation setting are placed in *writers* sections.
+## Настройка вывода результатов
+Параметры генерации отчёта размещаются в секции *writers*.
 
-#### HTML report writer
-Options for html-report placed in subsection *html* of *writers* sections.
+### HTML-отчёт
+Настройки HTML-отчёта размещаются в подсекции *html* секции *writers*.
 
-You can setup next options:
+Доступные параметры:
 
-**locale** - two latter language code. Now supported only *en/ru*.
+**locale** — двухбуквенный код языка. Поддерживаются *en/ru*.
 
-**filename** - filename for html report.
+**filename** — имя файла HTML-отчёта.
 
-**numberFormat** - [Extended Java decimal format](https://freemarker.apache.org/docs/ref_builtins_number.html#topic.extendedJavaDecimalFormat) to control how numbers are displayed in the report.
+**numberFormat** — [расширенный формат чисел Java](https://freemarker.apache.org/docs/ref_builtins_number.html#topic.extendedJavaDecimalFormat) для управления отображением чисел в отчёте.
 
 ````
 {
@@ -212,10 +386,10 @@ You can setup next options:
       }
   }
 }
-````
+`````
 
-#### Report customization
-To customize your http report with your own template set full path to the template like below:
+### Настройка шаблона отчёта
+Для кастомизации HTML-отчёта собственным шаблоном укажите полный путь к шаблону:
 ````
 {
   ....
@@ -227,35 +401,35 @@ To customize your http report with your own template set full path to the templa
     }
   }
 }
-````
+`````
 
-[Look here](https://github.com/swagger-api/swagger-parser/blob/master/modules/swagger-parser-core/src/main/java/io/swagger/v3/parser/core/models/ParseOptions.java) to see all available options.
+[Смотрите здесь](https://github.com/swagger-api/swagger-parser/blob/master/modules/swagger-parser-core/src/main/java/io/swagger/v3/parser/core/models/ParseOptions.java) все доступные опции.
 
 
 ## Demo
-I have prepared several tests. Thus you are able to have a look and touch swagger-coverage. Just run ```run.sh``` script.
+Подготовлено несколько тестов. Вы можете посмотреть и попробовать swagger-coverage. Просто запустите скрипт ```run.sh```.
 
-## Important remark
-Swagger-coverage works fine with clients which were generated from swagger (for example: https://github.com/OpenAPITools/openapi-generator). 
-Because all methods/parameters which will be saved are 100% compatible with current API specification. 
+## Важное замечание
+Swagger-coverage корректно работает с клиентами, сгенерированными из swagger (например: https://github.com/OpenAPITools/openapi-generator).
+Поскольку все методы/параметры, которые будут сохранены, на 100% совместимы с текущей спецификацией API.
 
-## Requirements 
+## Требования
 
-For a moment swagger-coverage  is compatible only with OpenApi specifications v2 & v3. It is possible that swagger-coverage will support other versions.
+В данный момент swagger-coverage совместим только со спецификациями OpenAPI v2 и v3. Возможно, в будущем будут поддержаны и другие версии.
 
 ## Pull Requests
-My project is open for any enhancement. So, your help is much appreciated. Please, feel free to open your pull request or issue and I will consider it in several days.
+Проект открыт для любых улучшений. Ваша помощь очень ценится. Не стесняйтесь создавать pull request или issue — я рассмотрю их в течение нескольких дней.
 
-## Created & Maintained By
+## Создатель и сопровождающий
 [Victor Orlovsky](https://github.com/viclovsky)
 
-## Contributing to swagger-coverage
-Thanks to all people who contributed. Especially 
+## Участие в разработке
+Спасибо всем, кто внёс вклад. Особая благодарность
 
-* [@TemaMak](https://github.com/TemaMak) 
+* [@TemaMak](https://github.com/TemaMak)
 * [@Emilio-Pega](https://github.com/Emilio-Pega)
 
-who have contributed significant improvements to swagger-coverage.
+за значительные улучшения swagger-coverage.
 
-## License
-Swagger coverage is released under version 2.0 of the [Apache License](http://www.apache.org/licenses/LICENSE-2.0)
+## Лицензия
+Swagger coverage выпущен под версией 2.0 [лицензии Apache](http://www.apache.org/licenses/LICENSE-2.0)
