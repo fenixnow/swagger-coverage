@@ -18,6 +18,9 @@ public class OnlyDeclaredHTTPStatusesRule extends ConditionRule {
 
     @Override
     public List<Condition> createCondition(Operation operation) {
+        if (operation.getResponses() == null) {
+            return Collections.emptyList();
+        }
         ConditionPredicate predicate = new FullStatusConditionPredicate(operation.getResponses().keySet());
         Condition condition = new SinglePredicateCondition(
                 "only declared status",
