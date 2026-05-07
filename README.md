@@ -306,7 +306,7 @@ unzip swagger-coverage-commandline-{latest-swagger-coverage-version}.zip
 
 ### Полный пример конфигурации
 
-Этот пример включает все правила, фильтрует проверку статусов только по `200` и `201`, игнорирует `400` и `500`, а также настраивает HTML и JSON writers:
+Этот пример включает все правила, фильтрует проверку статусов только по `200` и `201`, игнорирует `400` и `500`, а также настраивает HTML, JSON и LLM writers:
 
 ```json
 {
@@ -353,12 +353,43 @@ unzip swagger-coverage-commandline-{latest-swagger-coverage-version}.zip
     },
     "json": {
       "filename": "swagger-coverage-results.json"
+    },
+    "llm": {
+      "filename": "swagger-coverage-llm-report.json"
     }
   }
 }
 ```
 
 Если вам нужны свои правила для генерации условий, пожалуйста, присылайте PR.
+
+### JSON-отчёт для LLM
+
+Для генерации компактного отчёта, оптимизированного для анализа LLM, используйте writer `llm`. Формат группирует данные по методам API и включает описания требований из swagger-спецификации.
+
+**Пример выходного формата:**
+
+```json
+{
+  "api": "API v1.0",
+  "summary": { "total_operations": 89, "not_covered": 64, "coverage_percent": 13.0 },
+  "paths": {
+    "/category": {
+      "GET": {
+        "state": "PARTY",
+        "coverage": "20/21",
+        "requirements": {
+          "parameters": [
+            { "name": "with_ft", "in": "query", "description": "Флаг для получения товаров с falseteasers", "covered": false }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Этот формат позволяет LLM запросить конкретный метод и получить все требования с описаниями.
 
 ## Настройка вывода результатов
 Параметры генерации отчёта размещаются в секции *writers*.
@@ -387,6 +418,34 @@ unzip swagger-coverage-commandline-{latest-swagger-coverage-version}.zip
   }
 }
 `````
+
+### JSON-отчёт для LLM
+
+Для генерации компактного отчёта, оптимизированного для анализа LLM, используйте writer `llm`. Формат группирует данные по методам API и включает описания требований из swagger-спецификации.
+
+**Пример выходного формата:**
+
+```json
+{
+  "api": "API v1.0",
+  "summary": { "total_operations": 89, "not_covered": 64, "coverage_percent": 13.0 },
+  "paths": {
+    "/category": {
+      "GET": {
+        "state": "PARTY",
+        "coverage": "20/21",
+        "requirements": {
+          "parameters": [
+            { "name": "with_ft", "in": "query", "description": "Флаг для получения товаров с falseteasers", "covered": false }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Этот формат позволяет LLM запросить конкретный метод и получить все требования с описаниями.
 
 ### Настройка шаблона отчёта
 Для кастомизации HTML-отчёта собственным шаблоном укажите полный путь к шаблону:

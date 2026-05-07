@@ -12,3 +12,11 @@ build
 # Allure
 allure-results
 bin/
+
+### Eclipse ###
+.classpath
+.factorypath
+.project
+.settings/
+*.launch
+*.pydevproject

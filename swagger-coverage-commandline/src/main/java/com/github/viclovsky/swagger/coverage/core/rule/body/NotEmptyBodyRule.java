@@ -17,7 +17,7 @@ public class NotEmptyBodyRule extends ConditionRule {
             List<Condition> conditions = new ArrayList<>();
             conditions.add(new SinglePredicateCondition(
                     "not empty body request",
-                    "",
+                    operation.getRequestBody().getDescription() != null ? operation.getRequestBody().getDescription() : "",
                     new DefaultBodyConditionPredicate()
             ));
             return conditions;

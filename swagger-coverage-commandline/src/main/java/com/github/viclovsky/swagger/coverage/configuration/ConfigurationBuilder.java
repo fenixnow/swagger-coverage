@@ -25,6 +25,7 @@ import com.github.viclovsky.swagger.coverage.core.rule.status.OnlyDeclaredHTTPSt
 import com.github.viclovsky.swagger.coverage.core.writer.CoverageResultsWriter;
 import com.github.viclovsky.swagger.coverage.core.writer.FileSystemResultsWriter;
 import com.github.viclovsky.swagger.coverage.core.writer.HtmlReportResultsWriter;
+import com.github.viclovsky.swagger.coverage.core.writer.LLMResultsWriter;
 import com.github.viclovsky.swagger.coverage.core.writer.LogResultsWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ public class ConfigurationBuilder {
             configuredResultsWriters.add(new HtmlReportResultsWriter());
             configuredResultsWriters.add(new LogResultsWriter());
             configuredResultsWriters.add(new FileSystemResultsWriter());
+            configuredResultsWriters.add(new LLMResultsWriter());
         } else {
             options.getWriters()
                     .forEach((key, value) -> {
@@ -81,6 +83,11 @@ public class ConfigurationBuilder {
                             case "json":
                                 configuredResultsWriters.add(
                                         new FileSystemResultsWriter(value.getFilename())
+                                );
+                                break;
+                            case "llm":
+                                configuredResultsWriters.add(
+                                        new LLMResultsWriter(value.getFilename())
                                 );
                                 break;
                         }

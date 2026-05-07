@@ -17,7 +17,7 @@ public class PropertyNotOnlyEnumValuesRule extends PropertyConditionRule {
                 && enums != null && !enums.isEmpty()) {
             return new SinglePredicateCondition(
                     String.format("«%s» contains all values from enum %s", name, enums),
-                    "",
+                    schema.getDescription() != null ? schema.getDescription() : "",
                     new PropertyValueNotOnlyConditionPredicate(mediaTypeName, name, enums)
             );
         }

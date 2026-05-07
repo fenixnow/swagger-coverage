@@ -15,7 +15,7 @@ public class EmptyHeaderRule extends ParameterConditionRule {
             ConditionPredicate predicate = new DefaultParameterConditionPredicate(true, parameter.getName(), parameter.getIn());
             return new SinglePredicateCondition(
                     String.format("header «%s» is empty", parameter.getName()),
-                    "",
+                    parameter.getDescription() != null ? parameter.getDescription() : "",
                     predicate
             );
         }

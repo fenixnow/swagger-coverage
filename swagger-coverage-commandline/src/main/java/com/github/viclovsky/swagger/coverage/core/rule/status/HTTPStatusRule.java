@@ -13,7 +13,7 @@ public class HTTPStatusRule extends StatusConditionRule {
     }
 
     @Override
-    public Condition processStatus(String status) {
+    public Condition processStatus(String status, String description) {
         if (skip(status)) {
             return null;
         }
@@ -21,7 +21,7 @@ public class HTTPStatusRule extends StatusConditionRule {
         ConditionPredicate predicate = new DefaultStatusConditionPredicate(status);
         return new SinglePredicateCondition(
                 "HTTP status " + status,
-                "",
+                description,
                 predicate
         );
     }

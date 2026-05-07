@@ -12,7 +12,7 @@ public class PropertyNotEmptyRule extends PropertyConditionRule {
         if (schema != null && name != null && mediaTypeName != null) {
             return new SinglePredicateCondition(
                     String.format("«%s» is not empty", name),
-                    "",
+                    schema.getDescription() != null ? schema.getDescription() : "",
                     new DefaultPropertyConditionPredicate(mediaTypeName, name, false)
             );
         }

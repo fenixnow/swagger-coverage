@@ -22,7 +22,7 @@ public class NotOnlyEnumValuesRule extends ParameterConditionRule {
 
             return new SinglePredicateCondition(
                     String.format("%s «%s»  contains values not only from enum", parameter.getIn(), parameter.getName()),
-                    "",
+                    parameter.getDescription() != null ? parameter.getDescription() : "",
                     predicate
             );
         }

@@ -19,7 +19,7 @@ public class EnumAllValuesRule extends ParameterConditionRule {
             ConditionPredicate predicate = new ParameterValueConditionPredicate(parameter.getName(), parameter.getIn(), enumValues);
             return new SinglePredicateCondition(
                     String.format("%s «%s» contains all values from enum %s", parameter.getIn(), parameter.getName(), enumValues),
-                    "",
+                    parameter.getDescription() != null ? parameter.getDescription() : "",
                     predicate
             );
         }
