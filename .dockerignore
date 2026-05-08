@@ -1,0 +1,17 @@
+.gradle/
+build/
+!swagger-coverage-commandline/build/
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+*.iml
+*.ipr
+*.iws
+.DS_Store
+.git/
+.github/
+swagger-coverage-output/
+custom-report.html
+*.log

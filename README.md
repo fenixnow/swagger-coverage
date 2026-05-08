@@ -464,6 +464,65 @@ unzip swagger-coverage-commandline-{latest-swagger-coverage-version}.zip
 
 [Смотрите здесь](https://github.com/swagger-api/swagger-parser/blob/master/modules/swagger-parser-core/src/main/java/io/swagger/v3/parser/core/models/ParseOptions.java) все доступные опции.
 
+## Использование Docker
+
+Вы можете собрать Docker-образ swagger-coverage локально для запуска CLI-утилиты в контейнере.
+
+### Сборка Docker-образа
+
+Находясь в корневой директории проекта, выполните:
+
+```bash
+docker build -t swagger-coverage:local .
+```
+
+### Запуск CLI-утилиты в Docker
+
+После сборки образа вы можете запустить swagger-coverage в контейнере:
+
+**Базовое использование:**
+```bash
+docker run --rm -v $(pwd)/swagger-coverage-output:/data swagger-coverage:local \
+  -s /data/swagger.json -i /data/coverage-output
+```
+
+**С файлом конфигурации:**
+```bash
+docker run --rm -v $(pwd):/data swagger-coverage:local \
+  -s /data/swagger.json \
+  -i /data/swagger-coverage-output \
+  -c /data/config.json
+```
+
+**Просмотр справки:**
+```bash
+docker run --rm swagger-coverage:local --help
+```
+
+**Пояснение параметров:**
+- `-v $(pwd):/data` — монтирует текущую директорию в `/data` внутри контейнера
+- `-s /data/swagger.json` — путь к спецификации (относительно смонтированной директории)
+- `-i /data/swagger-coverage-output` — путь к директории с результатами покрытия
+- `-c /data/config.json` — путь к файлу конфигурации (опционально)
+
+### Особенности Docker-образа
+
+- **Базовый образ:** Eclipse Temurin 8 JRE (сборка — `gradle:8.14-jdk8`)
+- **Пользователь:** работает под пользователем `swagger` (не root) для безопасности
+- **Рабочая директория:** `/data`
+- **Точка входа:** автоматически использует `swagger-coverage-commandline`
+
+### GitHub Actions CI/CD
+
+Проект использует GitHub Actions для автоматической сборки:
+
+- **CI** (`.github/workflows/build.yml`) — сборка проекта на pull requests и push в master
+- **Release** (`.github/workflows/release.yml`) — публикация артефактов при создании релиза, включая:
+  - Публикацию в Maven Central
+  - Генерацию и публикацию ZIP/TAR архивов на GitHub Releases
+
+Архивы для скачивания создаются автоматически при релизе и доступны на странице [Releases](https://github.com/viclovsky/swagger-coverage/releases/latest).
+
 
 ## Demo
 Подготовлено несколько тестов. Вы можете посмотреть и попробовать swagger-coverage. Просто запустите скрипт ```run.sh```.
